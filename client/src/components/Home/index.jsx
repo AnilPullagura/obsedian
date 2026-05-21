@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Oval } from 'react-loader-spinner';
+import { API_BASE_URL } from '../../apiConfig';
 import './index.css';
 
 // API Status Constants
@@ -16,14 +18,27 @@ const Home = () => {
   const [apiResult, setApiResult] = useState([]);
   const [errMsg, setErrMsg] = useState('');
 
-  // API Call Callback function
-  const getProducts = async () => {
+  const navigate = useNavigate();
+
+  // Redirect check: If user is not authenticated (no token), redirect to /login
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (!token) {
+      navigate('/login', { replace: true });
+    }
+  }, [navigate]);
+
+  // API Call Callback wrapped in useCallback to prevent hook dependency warnings
+  const getProducts = useCallback(async () => {
     setApiStatus(apiStatusConstants.loading);
     setErrMsg('');
 
     try {
       const token = Cookies.get('token');
-      const response = await fetch('/api/products', {
+      // Using API_BASE_URL variable prefix for hosting adaptability
+      const endpoint = `${API_BASE_URL}/api/products`;
+      
+      const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -33,8 +48,12 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Assuming products endpoint returns an array in data.products
-        setApiResult(data.products || data);
+        
+        // Exact destructuring of response sent by server: { products }
+        const { products } = data;
+        
+        // Storing products array in state
+        setApiResult(products);
         setApiStatus(apiStatusConstants.success);
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -45,11 +64,14 @@ const Home = () => {
       setErrMsg(error.message || 'Network connection failed');
       setApiStatus(apiStatusConstants.failure);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    const token = Cookies.get('token');
+    if (token) {
+      getProducts();
+    }
+  }, [getProducts]);
 
   // UI Placeholder render handlers for the user to integrate high-fidelity JSX
   const renderLoadingView = () => {

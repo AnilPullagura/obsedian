@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Oval } from 'react-loader-spinner';
+import { API_BASE_URL } from '../../apiConfig';
 import './index.css';
 
 // API Status Constants for Header Cart Count Fetch
@@ -16,14 +18,17 @@ const Header = () => {
   const [apiResult, setApiResult] = useState(null);
   const [errMsg, setErrMsg] = useState('');
 
-  // API Call Callback function to retrieve shopping cart details
-  const getCartDetails = async () => {
+  // API Call Callback wrapped in useCallback to prevent hook dependency warnings
+  const getCartDetails = useCallback(async () => {
     setApiStatus(headerApiStatusConstants.loading);
     setErrMsg('');
 
     try {
       const token = Cookies.get('token');
-      const response = await fetch('/api/cart', {
+      // Using API_BASE_URL variable prefix for hosting adaptability
+      const endpoint = `${API_BASE_URL}/api/cart`;
+
+      const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -33,8 +38,12 @@ const Header = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Assuming cart endpoint returns: { cart: { items: [], totalItemsCount: N, totalCost: M } }
-        setApiResult(data.cart || data);
+        
+        // Exact destructuring of response sent by server: { cart }
+        const { cart } = data;
+        
+        // Storing cart object in state
+        setApiResult(cart);
         setApiStatus(headerApiStatusConstants.success);
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -45,11 +54,14 @@ const Header = () => {
       setErrMsg(error.message || 'Network connection failed');
       setApiStatus(headerApiStatusConstants.failure);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    getCartDetails();
-  }, []);
+    const token = Cookies.get('token');
+    if (token) {
+      getCartDetails();
+    }
+  }, [getCartDetails]);
 
   // UI Placeholder render handlers for Header elements
   const renderLoadingView = () => {
@@ -102,10 +114,14 @@ const Header = () => {
 
   return (
     <header className="main-header">
-      <div className="header-brand">Obsidian Luxe</div>
+      <Link to="/" className="header-brand-link">
+        <div className="header-brand">Obsidian Luxe</div>
+      </Link>
       <nav className="header-nav">
-        {/* Nav Links */}
-        <span className="nav-item">Catalog</span>
+        {/* Nav Links using Link component */}
+        <Link to="/" className="nav-item-link">
+          <span className="nav-item">Catalog</span>
+        </Link>
         <div className="cart-icon-container">
           <span className="nav-item">Cart</span>
           {renderCartCount()}
