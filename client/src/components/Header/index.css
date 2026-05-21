@@ -1,4 +1,4 @@
-/* Obsidian Noir Header Styling */
+
 .main-header-bar {
   position: fixed;
   top: 0;
@@ -209,7 +209,7 @@
   transform: scale(0.97);
 }
 
-/* Spacer on root app.css or body is needed so layout content is not hidden under sticky header */
+
 body {
   padding-top: 80px;
 }

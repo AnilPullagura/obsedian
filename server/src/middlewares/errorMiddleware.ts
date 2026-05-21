@@ -22,7 +22,7 @@ export const errorHandler = (
     status: 'error',
     statusCode,
     message,
-    // Include stack trace only in development/testing for debug-ability
+    
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });
 };

@@ -1,6 +1,4 @@
-// Centralized API configuration
-// During local development, this can be empty (using Vite proxy) or set to 'http://localhost:5000'
-export const API_BASE_URL = '';
+export const API_BASE_URL = "https://obsedian-kgyt.onrender.com";
 
 export const API_ENDPOINTS = {
   login: `${API_BASE_URL}/api/auth/login`,

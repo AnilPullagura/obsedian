@@ -1,4 +1,4 @@
-/* Obsidian Noir Home Layout Styling */
+
 .home-catalog-view {
   flex-grow: 1;
   padding: var(--spacing-xl) var(--spacing-md) var(--spacing-xl);
@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 
-/* Status / Loader / Error Alignment */
+
 .catalog-status-container {
   display: flex;
   flex-direction: column;
@@ -76,7 +76,7 @@
   border-color: var(--color-primary);
 }
 
-/* Success Catalog Title Block */
+
 .catalog-header-block {
   text-align: center;
   margin-bottom: var(--spacing-lg);
@@ -101,7 +101,7 @@
   line-height: 1.6;
 }
 
-/* Responsive Grid System matching fluid structure */
+
 .products-grid-layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -121,7 +121,7 @@
   }
 }
 
-/* Translucent Glass Product Card */
+
 .product-glass-card {
   padding: var(--spacing-md);
   display: flex;
@@ -283,7 +283,7 @@
   box-shadow: none;
 }
 
-/* Edit Modal Design */
+
 .modal-fixed-overlay {
   position: fixed;
   inset: 0;
@@ -466,7 +466,7 @@
   cursor: not-allowed;
 }
 
-/* Delete Product Button for Authorized Operators & Admins */
+
 .product-delete-btn {
   width: 100%;
   padding: 12px;

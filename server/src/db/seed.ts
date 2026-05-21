@@ -10,7 +10,6 @@ const runSeed = async () => {
   console.log('🌱 Starting Database Seeding Engine (Obsidian Luxe)...');
 
   try {
-    // 1. Read and execute schema.sql to clear and recreate tables
     const schemaPath = path.join(__dirname, 'schema.sql');
     console.log(`📄 Reading database schema from: ${schemaPath}`);
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
@@ -19,7 +18,6 @@ const runSeed = async () => {
     await pool.query(schemaSql);
     console.log('✅ Schema rebuilt successfully.');
 
-    // 2. Hash and seed default Admin Account
     console.log('👤 Seeding Administrator Account...');
     const adminPasswordRaw = 'admin123';
     const adminPasswordHash = await bcrypt.hash(adminPasswordRaw, 10);
@@ -29,11 +27,10 @@ const runSeed = async () => {
       'pageadmin@gmail.com',
       adminPasswordHash,
       'admin',
-      true // admin has crud by default
+      true
     );
     console.log(`✅ Admin Seeded: ${admin.email} (Password: ${adminPasswordRaw})`);
 
-    // 3. Seed Fake Users
     console.log('👥 Seeding Fake User Accounts...');
     const userCount = 10;
     const defaultPasswordRaw = 'user123!';
@@ -42,7 +39,6 @@ const runSeed = async () => {
     for (let i = 0; i < userCount; i++) {
       const name = faker.person.fullName();
       const email = faker.internet.email().toLowerCase();
-      // Give one of the users product CRUD permission for E2E testing convenience
       const permissionToCrud = i === 0;
 
       await UserModel.create(
@@ -55,7 +51,6 @@ const runSeed = async () => {
     }
     console.log(`✅ Seeded ${userCount} dummy user accounts (Default Password: ${defaultPasswordRaw}).`);
 
-    // 4. Seed Fake Products (Premium Luxury E-commerce Items for Obsidian Luxe)
     console.log('🛍️ Seeding Fake E-commerce Product Inventory...');
     
     const ecommerceProducts = [
@@ -131,7 +126,6 @@ const runSeed = async () => {
       }
     ];
 
-    // Seed e-commerce products
     for (const item of ecommerceProducts) {
       const stock = faker.number.int({ min: 5, max: 50 });
       await ProductModel.create({
@@ -158,7 +152,6 @@ const runSeed = async () => {
       'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80'
     ];
 
-    // Add extra faker products to reach 20 products
     for (let i = ecommerceProducts.length; i < 20; i++) {
       const name = faker.commerce.productName();
       const description = `The premium ${name.toLowerCase()} designed by Obsidian Luxe. Engineered for superior performance and longevity, utilizing ${faker.commerce.productMaterial().toLowerCase()} with clean finishes and high quality control.`;
@@ -189,5 +182,4 @@ const runSeed = async () => {
   }
 };
 
-// Execute seeding script
 runSeed();

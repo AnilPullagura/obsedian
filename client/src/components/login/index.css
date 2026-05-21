@@ -1,15 +1,15 @@
-/* Obsidian Noir Auth Layout Styling */
+
 .auth-page-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: row;
   position: relative;
   background-color: #0A0A0A;
-  padding-bottom: 60px; /* space for fixed footer */
+  padding-bottom: 60px; 
   padding-top: 20px;
 }
 
-/* Left Section - Lifestyle Showcase */
+
 .auth-lifestyle-panel {
   display: none;
   width: 50%;
@@ -37,7 +37,7 @@
   background: linear-gradient(to right, transparent, #0A0A0A 95%);
 }
 
-/* Right Section - Form Panel */
+
 .auth-form-panel {
   width: 100%;
   display: flex;
@@ -215,7 +215,7 @@
   text-align: center;
 }
 
-/* Footer Section */
+
 .auth-footer-bar {
   position: absolute;
   bottom: 0;
@@ -261,7 +261,7 @@
   color: var(--color-primary);
 }
 
-/* Responsive Breakpoints */
+
 @media (min-width: 768px) {
   .auth-page-layout {
     padding-bottom: 0;

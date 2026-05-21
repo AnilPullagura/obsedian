@@ -1,8 +1,8 @@
-/* Obsidian Luxe Global Design System Foundation */
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Outfit:wght@400;500;600;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 :root {
-  /* Color Palette - Obsidian Noir / Deep Rose */
+  
   --bg-primary: #0A0A0A;
   --bg-surface: #121414;
   --bg-surface-glass: rgba(18, 20, 20, 0.6);
@@ -28,19 +28,19 @@
   --color-text-muted: #474646;
   --color-text-on-primary: #660025;
   
-  /* Fonts */
+  
   --font-display: 'Outfit', 'Montserrat', sans-serif;
   --font-heading: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
   
-  /* Border Radius */
+  
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-full: 9999px;
   
-  /* Spacing Scale (8px rhythm) */
+  
   --spacing-xs: 4px;
   --spacing-sm: 12px;
   --spacing-md: 24px;
@@ -67,7 +67,7 @@ body {
   min-height: 100vh;
 }
 
-/* Custom Premium Scrollbar for Cyber Aesthetic */
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -86,13 +86,13 @@ body {
   background: var(--color-primary);
 }
 
-/* Selection highlight styling */
+
 ::selection {
   background-color: var(--color-primary-container);
   color: var(--color-on-primary-container);
 }
 
-/* Common UI Helper Classes */
+
 .glass-surface {
   background: var(--bg-surface-glass);
   backdrop-filter: blur(20px);
@@ -109,7 +109,7 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-/* Subtle Glowing Borders & Buttons */
+
 .glow-border-rose {
   box-shadow: 0 0 15px rgba(255, 178, 190, 0.1);
   border: 1px solid var(--color-border-hover);
@@ -144,7 +144,7 @@ body {
   box-shadow: 0 0 8px rgba(255, 78, 124, 0.4);
 }
 
-/* Micro-animations */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

@@ -11,21 +11,21 @@ export interface User {
 }
 
 export class UserModel {
-  // Find a user by email
+  
   static async findByEmail(email: string): Promise<User | null> {
     const query = 'SELECT * FROM users WHERE email = $1';
     const { rows } = await pool.query(query, [email]);
     return rows[0] || null;
   }
 
-  // Find a user by ID
+  
   static async findById(id: number): Promise<User | null> {
     const query = 'SELECT id, name, email, permission_to_crud, role, created_at FROM users WHERE id = $1';
     const { rows } = await pool.query(query, [id]);
     return rows[0] || null;
   }
 
-  // Create a new user
+  
   static async create(
     name: string,
     email: string,
@@ -48,21 +48,21 @@ export class UserModel {
     return rows[0];
   }
 
-  // Get all users (excluding passwords)
+  
   static async getAll(): Promise<User[]> {
     const query = 'SELECT id, name, email, role, permission_to_crud, created_at FROM users ORDER BY id ASC';
     const { rows } = await pool.query(query);
     return rows;
   }
 
-  // Delete a user
+  
   static async delete(id: number): Promise<boolean> {
     const query = 'DELETE FROM users WHERE id = $1';
     const { rowCount } = await pool.query(query, [id]);
     return rowCount ? rowCount > 0 : false;
   }
 
-  // Update a user's CRUD permissions
+  
   static async updatePermission(id: number, permissionToCrud: boolean): Promise<User | null> {
     const query = `
       UPDATE users

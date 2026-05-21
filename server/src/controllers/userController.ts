@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 import { UserService } from '../services/userService';
 
-// Retrieve all user details (Admin only)
+
 export const getUsers = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const users = await UserService.getAllUsers();
@@ -12,7 +12,7 @@ export const getUsers = async (req: AuthenticatedRequest, res: Response, next: N
   }
 };
 
-// Delete user account by ID (Admin only)
+
 export const deleteUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -32,7 +32,7 @@ export const deleteUser = async (req: AuthenticatedRequest, res: Response, next:
   }
 };
 
-// Update user CRUD permission status (Admin only)
+
 export const updateUserPermission = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const userId = parseInt(req.params.id as string, 10);
   const { permission_to_crud } = req.body;

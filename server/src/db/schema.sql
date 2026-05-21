@@ -1,18 +1,10 @@
--- Enable UUID extension if needed, though standard serial IDs are perfectly fine for this minimal task.
--- We will use SERIAL for simplicity and direct relational mapping.
-
--- Drop existing tables to ensure a clean slate when running migrations or seeds
 DROP TABLE IF EXISTS cart_items CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
-
--- Drop existing ENUMs if they exist
 DROP TYPE IF EXISTS user_role CASCADE;
 
--- Define User Roles
 CREATE TYPE user_role AS ENUM ('user', 'admin');
 
--- Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -23,7 +15,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Products Table
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -36,7 +27,6 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Cart Items Table
 CREATE TABLE cart_items (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

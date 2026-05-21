@@ -2,10 +2,49 @@
 
 Welcome to the **Obsidian Luxe Backend Engine**—a robust, production-grade Express + Node.js + TypeScript service layer built for high-performance e-commerce product catalog operations and shopping cart management.
 
-This engine is strictly structured under a decoupled **Controller-Service-Model (CSM)** architecture, ensuring extreme code separation, highly testable service layers, and thin Express controllers.
+---
 
-> [!TIP]
-> This entire document is dynamically synchronized. The active route tables and middleware chains in the documentation are **reflectively scanned in real-time** from the live Express engine stack!
+## 👔 CTO Executive Briefing & Architectural Recap
+
+This briefing highlights the backend's core design patterns, database configurations, and operational flow developed for the storefront UI.
+
+### 1. Architectural Paradigm
+The backend is structured under a strict **Controller-Service-Model (CSM)** architecture:
+*   **Controller Layer (`src/controllers/`)**: Thin HTTP handlers parsing requests, enforcing contract inputs, and responding with precise payloads.
+*   **Service Layer (`src/services/`)**: Centralized business logic nodes containing all calculations, transactional operations, and security validation routines.
+*   **Model Layer (`src/models/`)**: Decoupled database interfaces using parameterized SQL queries with `pg` pools, isolating query logic from business execution.
+
+### 2. Session Validation & Security Guardrails
+User session management is built on stateless **JWT Token Handshakes** passing through robust middleware filters:
+*   **Token Verification (`authenticateJWT`)**: Intercepts request headers, parses the `Authorization: Bearer <token>` token, decrypts it using a secure HMAC SHA-256 algorithm, and attaches the active session profile (`req.user`) to the pipeline context.
+*   **Role Validation (`isAdmin`)**: Strict guard blocking administrative routes (e.g. user registries, permission panels) unless `req.user.role === 'admin'`.
+*   **Permission Verification (`canCRUDProducts`)**: Unified security validator governing catalog changes (Create, Update, Delete). It grants permission if the session satisfies `req.user.role === 'admin' OR req.user.permission_to_crud === true`.
+
+### 3. Dynamic Access & Permission Controls
+To delegate store operations without exposing root administration credentials:
+*   **Granting Operator Rights**: Administrators utilize the `PUT /api/users/:id/permission` endpoint to toggle a user's `permission_to_crud` flag in the PostgreSQL database.
+*   **Database Constraints**: The PostgreSQL schema restricts these rights at the structural level. Columns default to `false` for standard profiles and enforce non-null states.
+*   **Cascading Integrity**: System cart operations map foreign key relations matching user profiles and catalog products, configured with `ON DELETE CASCADE` triggers to guarantee database consistency when products or profiles are terminated.
+
+### 4. API Core Endpoints Utilized by the Client
+
+*   **Auth Module**:
+    *   `POST /api/auth/signup`: Registers profiles and returns signed JWT keys.
+    *   `POST /api/auth/login`: Verifies passwords using `bcryptjs` and grants active sessions.
+*   **Catalog Module**:
+    *   `GET /api/products`: Retrieves complete e-commerce product listings.
+    *   `PUT /api/products/:id`: Updates e-commerce product stock, prices, and name properties.
+    *   `DELETE /api/products/:id`: Purges e-commerce products from database registry.
+*   **Cart Module**:
+    *   `GET /api/cart`: Computes total cost, VAT (8%), shipping costs, and item quantities dynamically.
+    *   `POST /api/cart`: Appends items to the active cart.
+    *   `PUT /api/cart/:productId`: Alters item quantities under stock level limits.
+    *   `DELETE /api/cart/:productId`: Purges item allocations.
+    *   `DELETE /api/cart`: Clears entire cart upon checkout completion.
+*   **User/Admin Control Panel**:
+    *   `GET /api/users`: Interrogates user registries.
+    *   `PUT /api/users/:id/permission`: Authorizes or restricts CRUD permissions.
+    *   `DELETE /api/users/:id`: Revokes user logins and purges active sessions.
 
 ---
 

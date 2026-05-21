@@ -10,10 +10,8 @@ const App = () => {
   return (
     <Router>
       <div className="app-container">
-        {/* Persistent Header across all paths */}
         <Header />
         
-        {/* Page route matches */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

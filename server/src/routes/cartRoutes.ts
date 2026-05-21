@@ -10,7 +10,7 @@ import { authenticateJWT } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-// Protect all shopping cart endpoints with authentication
+
 router.use(authenticateJWT as any);
 
 router.get('/', getCart as any);

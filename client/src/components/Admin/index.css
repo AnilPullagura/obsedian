@@ -1,4 +1,4 @@
-/* Obsidian Luxe Admin Dashboard Stylesheet */
+
 
 .admin-page-view {
   min-height: 100vh;
@@ -37,7 +37,7 @@
   margin-top: 4px;
 }
 
-/* Loading & Status States */
+
 .admin-status-wrapper {
   display: flex;
   flex-direction: column;
@@ -85,7 +85,7 @@
   box-shadow: 0 0 20px var(--color-accent-glow-hover);
 }
 
-/* KPI Metrics Dashboard Panel */
+
 .admin-metrics-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -167,7 +167,7 @@
   letter-spacing: 0.5px;
 }
 
-/* User Tabular Registry Grid */
+
 .admin-table-container {
   border-radius: var(--radius-xl);
   padding: 30px;
@@ -236,7 +236,7 @@
   font-weight: 600;
 }
 
-/* Role Badges */
+
 .role-badge {
   font-family: var(--font-heading);
   font-size: 0.75rem;
@@ -259,7 +259,7 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Toggle Custom Slider Switch */
+
 .toggle-slider-box {
   display: flex;
   align-items: center;
@@ -337,7 +337,7 @@ input:checked + .slider-switch:before {
   color: #474646;
 }
 
-/* User deletion Revoke Button */
+
 .revoke-btn {
   background: transparent;
   border: 1px solid #261518;
@@ -374,7 +374,7 @@ input:checked + .slider-switch:before {
   text-align: center;
 }
 
-/* Cyber Table Footer Block */
+
 .table-footer-actions {
   display: flex;
   justify-content: space-between;

@@ -1,4 +1,4 @@
-/* Obsidian Luxe Cart Stylesheet */
+
 
 .cart-page-view {
   min-height: 100vh;
@@ -16,7 +16,7 @@
   padding: 0 var(--spacing-gutter);
 }
 
-/* Loading & Status States */
+
 .cart-status-wrapper {
   display: flex;
   flex-direction: column;
@@ -79,7 +79,7 @@
   transform: translateY(-1px);
 }
 
-/* Empty Cart Design */
+
 .cart-empty-panel {
   display: flex;
   flex-direction: column;
@@ -129,7 +129,7 @@
   transition: all 0.3s ease;
 }
 
-/* Main Layout columns */
+
 .cart-content-layout {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -144,7 +144,7 @@
   }
 }
 
-/* Cart Items Column styles */
+
 .cart-items-column {
   display: flex;
   flex-direction: column;
@@ -191,7 +191,7 @@
   gap: var(--spacing-sm);
 }
 
-/* Individual Cart Item Card */
+
 .cart-item-row {
   display: flex;
   padding: 20px;
@@ -279,7 +279,7 @@
   gap: var(--spacing-sm);
 }
 
-/* Quantity Adjuster Bar */
+
 .quantity-adjuster-bar {
   display: flex;
   align-items: center;
@@ -348,7 +348,7 @@
   margin-top: 8px;
 }
 
-/* Cart Summary Column / Sticky Invoice */
+
 .cart-summary-column {
   position: sticky;
   top: calc(var(--spacing-xl) + var(--spacing-md));
@@ -484,7 +484,7 @@
   color: var(--color-text-primary);
 }
 
-/* Vault Success Transaction Panel Overlay */
+
 .checkout-success-fixed-overlay {
   position: fixed;
   top: 0;

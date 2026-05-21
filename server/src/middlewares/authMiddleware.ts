@@ -15,7 +15,7 @@ export interface AuthenticatedRequest extends Request {
   user?: UserPayload;
 }
 
-// Middleware to authenticate JWT token
+
 export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
@@ -34,7 +34,7 @@ export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: 
   }
 };
 
-// Middleware to verify Admin role
+
 export const isAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -47,7 +47,7 @@ export const isAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunc
   next();
 };
 
-// Middleware to verify product modification rights (Admin or permitted users)
+
 export const canCRUDProducts = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });

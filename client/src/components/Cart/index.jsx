@@ -5,7 +5,6 @@ import { Oval } from "react-loader-spinner";
 import { API_ENDPOINTS } from "../../apiConfig";
 import "./index.css";
 
-// API Status State Machine Constants
 const cartApiStatusConstants = {
   initial: "INITIAL",
   loading: "LOADING",
@@ -22,16 +21,13 @@ const Cart = () => {
   });
   const [errMsg, setErrMsg] = useState("");
 
-  // Checkout success overlay state
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
-  // Individual item quantity modification loader state (product_id -> boolean)
   const [updatingItemId, setUpdatingItemId] = useState(null);
 
   const navigate = useNavigate();
 
-  // Retrieve Cart Details from Express API Node
   const fetchCartContent = useCallback(async () => {
     const token = Cookies.get("token");
     if (!token) {
@@ -53,14 +49,12 @@ const Cart = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Exact destructuring of response sent by server: { cart }
         const { cart } = data;
         setCartData(cart);
         setApiStatus(cartApiStatusConstants.success);
       } else {
         const errorData = await response.json().catch(() => ({}));
 
-        // Handle expired token
         if (response.status === 401) {
           Cookies.remove("token");
           localStorage.removeItem("user");
@@ -79,7 +73,6 @@ const Cart = () => {
     }
   }, [navigate]);
 
-  // Auth Redirect check: If user is not authenticated, redirect to /login
   useEffect(() => {
     const token = Cookies.get("token");
     if (!token) {
@@ -92,11 +85,9 @@ const Cart = () => {
     }
   }, [navigate, fetchCartContent]);
 
-  // Update Cart Quantity handler (calls PUT /api/cart/:productId)
   const handleUpdateQuantity = async (productId, currentQty, increment) => {
     const nextQuantity = currentQty + increment;
     if (nextQuantity <= 0) {
-      // If quantity falls below 1, remove item instead
       handleRemoveItem(productId);
       return;
     }
@@ -119,9 +110,7 @@ const Cart = () => {
       });
 
       if (response.ok) {
-        // Refetch fresh aggregates from server
         await response.json();
-        // Trigger global cart sync to update persistent Header cart count badge
         window.dispatchEvent(new Event("cartUpdated"));
         await fetchCartContent();
       } else {
@@ -141,7 +130,6 @@ const Cart = () => {
     }
   };
 
-  // Remove individual product from cart (calls DELETE /api/cart/:productId)
   const handleRemoveItem = async (productId) => {
     const token = Cookies.get("token");
     if (!token) {
@@ -178,7 +166,6 @@ const Cart = () => {
     }
   };
 
-  // Clear entire cart for checkout/cleanup (calls DELETE /api/cart)
   const handleClearCart = async () => {
     const token = Cookies.get("token");
     if (!token) {
@@ -212,10 +199,8 @@ const Cart = () => {
     }
   };
 
-  // Handle Checkout Securely Action with premium vault checkout aesthetics
   const handleCheckoutSecurely = async () => {
     setIsProcessingCheckout(true);
-    // Simulate transaction handshake verification latency (1.5 seconds)
     setTimeout(async () => {
       try {
         await handleClearCart();
@@ -234,14 +219,12 @@ const Cart = () => {
     navigate("/", { replace: true });
   };
 
-  // Safe fallback default product image on image load failures
   const handleImageError = (e) => {
     e.target.onerror = null;
     e.target.src =
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80";
   };
 
-  // Render Loader View
   const renderLoadingView = () => (
     <div className="cart-status-wrapper">
       <Oval
@@ -255,7 +238,6 @@ const Cart = () => {
     </div>
   );
 
-  // Render Failure View
   const renderFailureView = () => (
     <div className="cart-status-wrapper error-border">
       <span className="material-symbols-outlined error-icon">warning</span>
@@ -273,7 +255,6 @@ const Cart = () => {
     </div>
   );
 
-  // Render Cart Catalog/Summary View
   const renderSuccessView = () => {
     const { items, totalCost } = cartData;
 
@@ -295,14 +276,12 @@ const Cart = () => {
       );
     }
 
-    // Calculations based on premium e-commerce logic
     const shippingFee = totalCost > 500 ? 0 : 25.0;
-    const estTax = totalCost * 0.08; // 8% technical acquisition VAT
+    const estTax = totalCost * 0.08;
     const grandTotal = totalCost + shippingFee + estTax;
 
     return (
       <div className="cart-content-layout animate-fade-in">
-        {/* Cart items list */}
         <div className="cart-items-column">
           <div className="cart-column-header">
             <h1 className="cart-page-title">Hardware Acquisitions</h1>
@@ -429,7 +408,6 @@ const Cart = () => {
           </div>
         </div>
 
-        {/* Cart summary box */}
         <div className="cart-summary-column">
           <div className="cart-summary-sticky-card glass-card glow-border-rose">
             <h2 className="summary-card-title">Acquisition Invoice</h2>
@@ -533,7 +511,6 @@ const Cart = () => {
     <main className="cart-page-view animate-fade-in">
       <div className="cart-page-container">{renderContent()}</div>
 
-      {/* Vault Checkout Success Modal */}
       {checkoutSuccess && (
         <div className="checkout-success-fixed-overlay">
           <div className="checkout-success-panel glass-surface glow-border-rose animate-fade-in">

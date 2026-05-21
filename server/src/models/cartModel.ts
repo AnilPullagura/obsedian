@@ -16,7 +16,7 @@ export interface CartItemWithProduct extends CartItem {
 }
 
 export class CartModel {
-  // Add product to cart (or increment quantity if already exists)
+  
   static async addToCart(userId: number, productId: number, quantity = 1): Promise<CartItem> {
     const query = `
       INSERT INTO cart_items (user_id, product_id, quantity)
@@ -29,7 +29,7 @@ export class CartModel {
     return rows[0];
   }
 
-  // Get all cart items for a specific user
+  
   static async getCart(userId: number): Promise<CartItemWithProduct[]> {
     const query = `
       SELECT 
@@ -47,7 +47,7 @@ export class CartModel {
     }));
   }
 
-  // Update item quantity directly
+  
   static async updateQuantity(userId: number, productId: number, quantity: number): Promise<CartItem | null> {
     const query = `
       UPDATE cart_items
@@ -59,14 +59,14 @@ export class CartModel {
     return rows[0] || null;
   }
 
-  // Remove specific item from cart
+  
   static async removeFromCart(userId: number, productId: number): Promise<boolean> {
     const query = 'DELETE FROM cart_items WHERE user_id = $1 AND product_id = $2';
     const { rowCount } = await pool.query(query, [userId, productId]);
     return rowCount ? rowCount > 0 : false;
   }
 
-  // Clear entire cart for a user
+  
   static async clearCart(userId: number): Promise<boolean> {
     const query = 'DELETE FROM cart_items WHERE user_id = $1';
     const { rowCount } = await pool.query(query, [userId]);

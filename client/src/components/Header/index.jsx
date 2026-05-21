@@ -5,7 +5,6 @@ import { Oval } from 'react-loader-spinner';
 import { API_ENDPOINTS } from '../../apiConfig';
 import './index.css';
 
-// API Status State Machine Constants for Header Count Fetch
 export const headerApiStatusConstants = {
   initial: 'INITIAL',
   loading: 'LOADING',
@@ -22,7 +21,6 @@ const Header = () => {
   const location = useLocation();
   const token = Cookies.get('token');
 
-  // Callback to fetch Cart Details from backend
   const getCartDetails = useCallback(async () => {
     const activeToken = Cookies.get('token');
     if (!activeToken) {
@@ -44,15 +42,10 @@ const Header = () => {
 
       if (response.ok) {
         const data = await response.json();
-        
-        // Exact destructuring of response sent by server: { cart }
         const { cart } = data;
-        
-        // Storing necessary aggregate count in state
         setCartCount(cart.totalItemsCount);
         setApiStatus(headerApiStatusConstants.success);
       } else {
-        // Handle expired session token during load
         if (response.status === 401) {
           Cookies.remove('token');
           localStorage.removeItem('user');
@@ -66,7 +59,6 @@ const Header = () => {
     }
   }, [navigate]);
 
-  // Read User Profile info from local storage
   const syncUserProfile = useCallback(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -80,7 +72,6 @@ const Header = () => {
     }
   }, []);
 
-  // Sync token state and pull cart info on mount/session changes
   useEffect(() => {
     if (token) {
       getCartDetails();
@@ -91,7 +82,6 @@ const Header = () => {
     }
   }, [token, getCartDetails, syncUserProfile]);
 
-  // Setup Event Listeners for cart modification broadcasts & session synchronizations
   useEffect(() => {
     const handleCartSync = () => {
       getCartDetails();
@@ -103,7 +93,6 @@ const Header = () => {
     };
   }, [getCartDetails]);
 
-  // Sign out handler: clears JWT token and user info
   const handleLogout = () => {
     Cookies.remove('token');
     localStorage.removeItem('user');
@@ -134,16 +123,13 @@ const Header = () => {
   return (
     <header className="main-header-bar glass-surface">
       <div className="header-content-wrapper">
-        {/* Brand logo linked to storefront root */}
         <Link to="/" className="header-brand-link">
           <span className="header-brand-title">Obsidian Luxe</span>
         </Link>
 
-        {/* Action Panel */}
         <div className="header-actions-panel">
           {token ? (
             <>
-              {/* Navigation targets using Link */}
               <nav className="header-nav-links">
                 <Link 
                   to="/" 

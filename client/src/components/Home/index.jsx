@@ -5,7 +5,6 @@ import { Oval } from "react-loader-spinner";
 import { API_ENDPOINTS } from "../../apiConfig";
 import "./index.css";
 
-// API Status State Machine Constants
 export const apiStatusConstants = {
   initial: "INITIAL",
   loading: "LOADING",
@@ -19,7 +18,6 @@ const Home = () => {
   const [errMsg, setErrMsg] = useState("");
   const [userProfile, setUserProfile] = useState(null);
 
-  // Edit Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editName, setEditName] = useState("");
@@ -28,25 +26,21 @@ const Home = () => {
   const [editStock, setEditStock] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Cart addition tracking per product to show local loader feedback
   const [addingCartId, setAddingCartId] = useState(null);
 
   const navigate = useNavigate();
 
-  // API callback wrapped in useCallback to prevent hook dependency warnings
   const getProducts = useCallback(async () => {
     setApiStatus(apiStatusConstants.loading);
     setErrMsg("");
 
     try {
       const token = Cookies.get("token");
-      // If token disappears mid-session, force redirection to Vault
       if (!token) {
         navigate("/login", { replace: true });
         return;
       }
 
-      // Using centralized endpoint variable prefix
       const response = await fetch(API_ENDPOINTS.products, {
         method: "GET",
         headers: {
@@ -57,8 +51,6 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
-
-        // Exact destructuring of response sent by server: { products }
         const { products } = data;
 
         setProductsList(products);
@@ -66,7 +58,6 @@ const Home = () => {
       } else {
         const errorData = await response.json().catch(() => ({}));
 
-        // Handle expired or invalid session token
         if (response.status === 401) {
           Cookies.remove("token");
           navigate("/login", { replace: true });
@@ -85,7 +76,6 @@ const Home = () => {
     }
   }, [navigate]);
 
-  // Auth Redirect check: If user is not authenticated, redirect to /login
   useEffect(() => {
     const token = Cookies.get("token");
     if (!token) {
@@ -103,7 +93,6 @@ const Home = () => {
     }
   }, [navigate, getProducts]);
 
-  // Add Product to Cart API call
   const handleAddToCart = async (productId) => {
     setAddingCartId(productId);
     try {
@@ -119,12 +108,10 @@ const Home = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        // Body keys expected by cartController: { product_id, quantity }
         body: JSON.stringify({ product_id: productId, quantity: 1 }),
       });
 
       if (response.ok) {
-        // Broadcast custom event so Header component refreshes its count automatically
         window.dispatchEvent(new Event("cartUpdated"));
       } else {
         const errData = await response.json().catch(() => ({}));
@@ -142,7 +129,6 @@ const Home = () => {
     }
   };
 
-  // Open Edit Product Modal
   const handleOpenEditModal = (product) => {
     console.log(
       "DEBUG: handleOpenEditModal initiated with product payload:",
@@ -181,7 +167,6 @@ const Home = () => {
     }
   };
 
-  // Delete Product from database registry (calls DELETE /api/products/:id)
   const handleDeleteProduct = async (productId) => {
     const isConfirmed = window.confirm(
       "CRITICAL SECURITY ACTION: Are you absolute in purging this product catalog entry? This cannot be undone.",
@@ -204,7 +189,6 @@ const Home = () => {
       });
 
       if (response.ok) {
-        // Refetch catalog from database
         await getProducts();
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -223,14 +207,12 @@ const Home = () => {
     }
   };
 
-  // Close Edit Product Modal
   const handleCloseEditModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
     document.body.style.overflow = "auto";
   };
 
-  // Submit Edit Product details
   const handleSaveProductChanges = async (event) => {
     event.preventDefault();
     if (!selectedProduct) return;
@@ -261,7 +243,6 @@ const Home = () => {
       );
 
       if (response.ok) {
-        // Refetch products list to show fresh database updates
         await getProducts();
         handleCloseEditModal();
       } else {
@@ -280,7 +261,6 @@ const Home = () => {
     }
   };
 
-  // Render Loading View
   const renderLoadingView = () => (
     <div className="catalog-status-container">
       <Oval
@@ -294,7 +274,6 @@ const Home = () => {
     </div>
   );
 
-  // Render Failure View
   const renderFailureView = () => (
     <div className="catalog-status-container failure-box">
       <span className="material-symbols-outlined failure-icon">warning</span>
@@ -306,7 +285,6 @@ const Home = () => {
     </div>
   );
 
-  // Render Success Catalog
   const renderSuccessView = () => (
     <div className="catalog-grid-wrapper">
       <div className="catalog-header-block">
@@ -320,7 +298,6 @@ const Home = () => {
       <div className="products-grid-layout">
         {productsList.map((product) => {
           const isAdding = addingCartId === product.id;
-          // Fallback image if database image is missing
           const imageSrc =
             product.img ||
             "https://lh3.googleusercontent.com/aida-public/AB6AXuCOEpTycpLO7xmfpzNZCI2o4sei3NaNd1TohqZN3eNXnKSc5ZyoDNQkjZt3bdGzpuF2HhRWDkurymPSSePBCe6SbB-QWI7tPSiyza2fBEVYkMFAbicYZA_gPCBekmWnEfsjJCK7R_p5DoStEa5iSXvUTrQcM1tmP_A3i6R4LF-1SuLMx77d_3w7c3mOXu2ssizNKsA5NP6tqrwqbW7y_5aHiyFx2NjTPGdno6SVP5CWbCYl52d3vwxPh0MdxOil18MU-_TD5LCtsUM";
@@ -443,7 +420,6 @@ const Home = () => {
     <>
       <div className="home-catalog-view animate-fade-in">{renderContent()}</div>
       
-      {/* Edit Product Modal at root level to bypass any parent styling/transform/animation constraints */}
       {isModalOpen && (
         <div className="modal-fixed-overlay">
           <div className="modal-backdrop" onClick={handleCloseEditModal}></div>

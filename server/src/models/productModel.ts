@@ -13,7 +13,7 @@ export interface Product {
 }
 
 export class ProductModel {
-  // Create a new product
+  
   static async create(product: Omit<Product, 'id' | 'created_at'>): Promise<Product> {
     const query = `
       INSERT INTO products (name, description, img, price, stock, ratings, availability)
@@ -30,7 +30,7 @@ export class ProductModel {
       product.availability,
     ]);
 
-    // Parse price and ratings back to numbers since PostgreSQL returns numeric/decimal as string
+    
     return {
       ...rows[0],
       price: parseFloat(rows[0].price),
@@ -38,7 +38,7 @@ export class ProductModel {
     };
   }
 
-  // Get all products (with optional availability filter)
+  
   static async getAll(onlyAvailable = false): Promise<Product[]> {
     let query = 'SELECT * FROM products';
     const params: any[] = [];
@@ -57,7 +57,7 @@ export class ProductModel {
     }));
   }
 
-  // Get a single product by ID
+  
   static async findById(id: number): Promise<Product | null> {
     const query = 'SELECT * FROM products WHERE id = $1';
     const { rows } = await pool.query(query, [id]);
@@ -71,12 +71,12 @@ export class ProductModel {
     };
   }
 
-  // Update product details
+  
   static async update(
     id: number,
     product: Partial<Omit<Product, 'id' | 'created_at'>>
   ): Promise<Product | null> {
-    // Dynamically build the SET clauses
+    
     const fields = Object.keys(product);
     if (fields.length === 0) return await this.findById(id);
 
@@ -100,7 +100,7 @@ export class ProductModel {
     };
   }
 
-  // Delete a product
+  
   static async delete(id: number): Promise<boolean> {
     const query = 'DELETE FROM products WHERE id = $1';
     const { rowCount } = await pool.query(query, [id]);

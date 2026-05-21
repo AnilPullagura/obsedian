@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 import { CartService } from '../services/cartService';
 
-// Retrieve all items in the user's cart alongside calculation sums
+
 export const getCart = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -16,7 +16,7 @@ export const getCart = async (req: AuthenticatedRequest, res: Response, next: Ne
   }
 };
 
-// Add a product to the user's cart
+
 export const addToCart = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -46,7 +46,7 @@ export const addToCart = async (req: AuthenticatedRequest, res: Response, next: 
   }
 };
 
-// Update specific cart item quantity
+
 export const updateCartQuantity = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -75,7 +75,7 @@ export const updateCartQuantity = async (req: AuthenticatedRequest, res: Respons
   }
 };
 
-// Remove a specific product from the cart
+
 export const removeFromCart = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -95,7 +95,7 @@ export const removeFromCart = async (req: AuthenticatedRequest, res: Response, n
   }
 };
 
-// Clear all items in the user's cart
+
 export const clearCart = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthorized' });

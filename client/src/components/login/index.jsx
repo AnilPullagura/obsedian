@@ -5,7 +5,6 @@ import { Oval } from "react-loader-spinner";
 import { API_ENDPOINTS } from "../../apiConfig";
 import "./index.css";
 
-// API Status State Machine Constants
 export const authApiStatusConstants = {
   initial: "INITIAL",
   loading: "LOADING",
@@ -25,7 +24,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  // Redirect if token already exists (prevent logged-in users from visiting auth)
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
@@ -38,7 +36,6 @@ const Login = () => {
     setApiStatus(authApiStatusConstants.loading);
     setErrMsg("");
 
-    // Pre-flight validation
     if (!email || !password) {
       setErrMsg("Email and password are required");
       setApiStatus(authApiStatusConstants.failure);
@@ -69,17 +66,13 @@ const Login = () => {
       if (response.ok) {
         setApiStatus(authApiStatusConstants.success);
 
-        // Exact API response destructuring as defined on server controllers
         const { token, user } = data;
 
-        // Use js-cookie to store auth token
         const cookieOptions = rememberMe ? { expires: 7 } : { expires: 1 };
         Cookies.set("token", token, cookieOptions);
 
-        // Store user payload for profile/avatar display in client
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Use useNavigate with replace to replace route in history
         navigate("/", { replace: true });
       } else {
         setErrMsg(
@@ -112,7 +105,6 @@ const Login = () => {
 
   return (
     <main className="auth-page-layout animate-fade-in">
-      {/* Left Section: Premium Lifestyle Visual */}
       <section className="auth-lifestyle-panel">
         <img
           alt="Obsidian Luxe Lifestyle"
@@ -122,10 +114,8 @@ const Login = () => {
         <div className="lifestyle-overlay"></div>
       </section>
 
-      {/* Right Section: Form Container */}
       <section className="auth-form-panel">
         <div className="auth-card glass-card glow-border-rose">
-          {/* Authentic Design System Tabs */}
           <div className="auth-tabs-container">
             <button
               type="button"
@@ -216,7 +206,6 @@ const Login = () => {
         </div>
       </section>
 
-      {/* Footer copyright section matching Stitch spec */}
       <footer className="auth-footer-bar">
         <span className="footer-copyright">
           © 2024 OBSIDIAN LUXE. SECURED ACCESS ONLY.

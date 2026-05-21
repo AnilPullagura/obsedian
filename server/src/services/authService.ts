@@ -11,9 +11,9 @@ export interface AuthResult {
 }
 
 export class AuthService {
-  // Signup business logic
+  
   static async signup(name: string, email: string, passwordRaw: string): Promise<AuthResult> {
-    // 1. Double check duplicate user (business logic checks database constraint beforehand)
+    
     const existingUser = await UserModel.findByEmail(email);
     if (existingUser) {
       const error: any = new Error('User with this email already exists');
@@ -21,14 +21,14 @@ export class AuthService {
       throw error;
     }
 
-    // 2. Hash password
+    
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(passwordRaw, salt);
 
-    // 3. Create database row
+    
     const newUser = await UserModel.create(name, email, hashedPassword);
 
-    // 4. Sign token
+    
     const token = jwt.sign(
       {
         id: newUser.id,
@@ -44,7 +44,7 @@ export class AuthService {
     return { token, user: newUser };
   }
 
-  // Login business logic
+  
   static async login(email: string, passwordRaw: string): Promise<AuthResult> {
     const user = await UserModel.findByEmail(email);
     if (!user || !user.password) {
@@ -53,7 +53,7 @@ export class AuthService {
       throw error;
     }
 
-    // Compare credentials
+    
     const isPasswordMatch = await bcrypt.compare(passwordRaw, user.password);
     if (!isPasswordMatch) {
       const error: any = new Error('Invalid email or password');
@@ -63,7 +63,7 @@ export class AuthService {
 
     const { password: _, ...safeUser } = user;
 
-    // Generate JWT session token
+    
     const token = jwt.sign(
       {
         id: user.id,

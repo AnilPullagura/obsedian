@@ -5,7 +5,6 @@ import { Oval } from 'react-loader-spinner';
 import { API_ENDPOINTS } from '../../apiConfig';
 import './index.css';
 
-// API Status State Machine Constants
 export const adminApiStatusConstants = {
   initial: 'INITIAL',
   loading: 'LOADING',
@@ -17,13 +16,10 @@ const Admin = () => {
   const [apiStatus, setApiStatus] = useState(adminApiStatusConstants.initial);
   const [usersList, setUsersList] = useState([]);
   const [errMsg, setErrMsg] = useState('');
-  
-  // Track action loadings to show specific inline loaders during action requests
   const [actionLoadingUserId, setActionLoadingUserId] = useState(null);
 
   const navigate = useNavigate();
 
-  // Retrieve All Registered Users (Admin restricted)
   const fetchAllUsers = useCallback(async () => {
     const token = Cookies.get('token');
     if (!token) {
@@ -45,14 +41,12 @@ const Admin = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Exact destructuring of response sent by server: { users }
         const { users } = data;
         setUsersList(users);
         setApiStatus(adminApiStatusConstants.success);
       } else {
         const errorData = await response.json().catch(() => ({}));
         
-        // Handle expired token or insufficient permissions
         if (response.status === 401 || response.status === 403) {
           Cookies.remove('token');
           localStorage.removeItem('user');
@@ -69,7 +63,6 @@ const Admin = () => {
     }
   }, [navigate]);
 
-  // Auth & Admin Restricted Role Checks on mount
   useEffect(() => {
     const token = Cookies.get('token');
     const storedUser = localStorage.getItem('user');
@@ -81,7 +74,6 @@ const Admin = () => {
 
     try {
       const user = JSON.parse(storedUser);
-      // Force non-admins back to storefront catalog
       if (user.role !== 'admin') {
         navigate('/', { replace: true });
         return;
@@ -94,7 +86,6 @@ const Admin = () => {
     fetchAllUsers();
   }, [navigate, fetchAllUsers]);
 
-  // Toggle User CRUD Permissions (calls PUT /api/users/:id/permission)
   const handleTogglePermission = async (userId, currentVal) => {
     const token = Cookies.get('token');
     if (!token) {
@@ -112,12 +103,10 @@ const Admin = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        // Body keys expected by userController: { permission_to_crud }
         body: JSON.stringify({ permission_to_crud: targetPermission }),
       });
 
       if (response.ok) {
-        // Refresh users list from database
         await fetchAllUsers();
       } else {
         const errData = await response.json().catch(() => ({}));
@@ -135,7 +124,6 @@ const Admin = () => {
     }
   };
 
-  // Terminate User Account (calls DELETE /api/users/:id)
   const handleDeleteUser = async (userId) => {
     const isConfirmed = window.confirm('CRITICAL ACTION: Are you absolute in terminating this user credential token? This cannot be undone.');
     if (!isConfirmed) return;
@@ -174,7 +162,6 @@ const Admin = () => {
     }
   };
 
-  // Render Loader View
   const renderLoadingView = () => (
     <div className="admin-status-wrapper">
       <Oval height={50} width={50} color="#E91E63" secondaryColor="#333" strokeWidth={4} />
@@ -182,7 +169,6 @@ const Admin = () => {
     </div>
   );
 
-  // Render Failure View
   const renderFailureView = () => (
     <div className="admin-status-wrapper error-border">
       <span className="material-symbols-outlined error-icon">warning</span>
@@ -194,16 +180,13 @@ const Admin = () => {
     </div>
   );
 
-  // Render Dashboard Controls Success Panel
   const renderSuccessView = () => {
-    // Math indicators computed dynamically
     const totalUsers = usersList.length;
     const adminsCount = usersList.filter(u => u.role === 'admin').length;
     const operatorsCount = usersList.filter(u => u.permission_to_crud).length;
 
     return (
       <div className="admin-dashboard-layout animate-fade-in">
-        {/* KPI metrics row */}
         <section className="admin-metrics-row">
           <div className="metric-glass-card glass-surface">
             <div className="metric-icon-box">
@@ -246,7 +229,6 @@ const Admin = () => {
           </div>
         </section>
 
-        {/* User database table */}
         <section className="admin-table-container glass-card glow-border-rose">
           <div className="table-header-block">
             <h2 className="table-block-title">Encrypted Credentials Registry</h2>
@@ -285,7 +267,6 @@ const Admin = () => {
                       </td>
                       <td>
                         <div className="toggle-slider-box">
-                          {/* Custom Slider switch for beautiful visual experience */}
                           <label className={`switch-container ${user.role === 'admin' ? 'disabled' : ''}`}>
                             <input 
                               type="checkbox" 

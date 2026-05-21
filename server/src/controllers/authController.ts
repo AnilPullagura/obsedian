@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/authService';
 
-// Slim controller for registering a new user
+
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
@@ -22,7 +22,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-// Slim controller for logging in an existing user
+
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 

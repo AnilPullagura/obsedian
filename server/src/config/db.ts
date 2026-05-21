@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
-// Load environment variables
+
 dotenv.config();
 
 const connectionString = process.env.DATABASE_URL;
@@ -14,7 +14,7 @@ if (!connectionString) {
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 
-// Neon requires SSL. We'll enable it dynamically if sslmode=require is in the string.
+
 const sslConfig = connectionString.includes('sslmode=require')
   ? { rejectUnauthorized: false }
   : false;
@@ -22,8 +22,8 @@ const sslConfig = connectionString.includes('sslmode=require')
 export const pool = new Pool({
   connectionString,
   ssl: sslConfig,
-  // Adjust pool parameters for robust production usage
-  max: isTest ? 2 : 10, // Keep connections low during test runs
+  
+  max: isTest ? 2 : 10, 
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
 });

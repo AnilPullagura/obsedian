@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 import { ProductService } from '../services/productService';
 
-// Retrieve all products
+
 export const getProducts = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const products = await ProductService.getAllProducts();
@@ -12,7 +12,7 @@ export const getProducts = async (req: AuthenticatedRequest, res: Response, next
   }
 };
 
-// Retrieve a specific product by ID
+
 export const getProductById = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const productId = parseInt(req.params.id as string, 10);
 
@@ -28,7 +28,7 @@ export const getProductById = async (req: AuthenticatedRequest, res: Response, n
   }
 };
 
-// Create a new product (Protected)
+
 export const createProduct = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const { name, description, img, price, stock, ratings, availability } = req.body;
 
@@ -56,7 +56,7 @@ export const createProduct = async (req: AuthenticatedRequest, res: Response, ne
   }
 };
 
-// Update an existing product (Protected)
+
 export const updateProduct = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const productId = parseInt(req.params.id as string, 10);
 
@@ -82,7 +82,7 @@ export const updateProduct = async (req: AuthenticatedRequest, res: Response, ne
   }
 };
 
-// Delete a product (Protected)
+
 export const deleteProduct = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const productId = parseInt(req.params.id as string, 10);
 
