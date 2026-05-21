@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Local env files
+.env
+server/.env
+client/.env
+
+# Build/Dist directories
+dist/
+server/dist/
+client/dist/
+
+# IDE files and OS garbage
+.idea/
+.vscode/
+Thumbs.db
+ehthumbs.db
+Desktop.ini

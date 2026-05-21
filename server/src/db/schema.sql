@@ -1,0 +1,47 @@
+-- Enable UUID extension if needed, though standard serial IDs are perfectly fine for this minimal task.
+-- We will use SERIAL for simplicity and direct relational mapping.
+
+-- Drop existing tables to ensure a clean slate when running migrations or seeds
+DROP TABLE IF EXISTS cart_items CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+-- Drop existing ENUMs if they exist
+DROP TYPE IF EXISTS user_role CASCADE;
+
+-- Define User Roles
+CREATE TYPE user_role AS ENUM ('user', 'admin');
+
+-- Users Table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    permission_to_crud BOOLEAN DEFAULT FALSE,
+    role user_role DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Products Table
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    img VARCHAR(255),
+    price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    stock INTEGER NOT NULL DEFAULT 0,
+    ratings DECIMAL(3, 2) DEFAULT 0.00,
+    availability BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Cart Items Table
+CREATE TABLE cart_items (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, product_id)
+);
