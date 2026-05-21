@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './components/Home';
 import Login from './components/login';
+import Cart from './components/Cart';
+import Admin from './components/Admin';
 import './App.css';
 
 const App = () => {
@@ -15,12 +17,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          {/* 
-            USER NOTEs: Add additional routes here as you create new pages!
-            Example:
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/products/:id" element={<ProductDetails />} />
-          */}
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </Router>

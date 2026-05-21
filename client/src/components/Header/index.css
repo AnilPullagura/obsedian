@@ -1,82 +1,215 @@
 /* Obsidian Noir Header Styling */
-.main-header {
-  height: 80px;
+.main-header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 80px;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.header-content-wrapper {
+  max-width: 1440px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 40px;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
 }
 
 .header-brand-link {
   text-decoration: none;
-}
-
-.header-brand {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 1.4rem;
-  letter-spacing: 0.05em;
-  color: #FFFFFF;
-}
-
-.header-nav {
   display: flex;
   align-items: center;
-  gap: 24px;
 }
 
-.nav-item-link {
-  text-decoration: none;
+.header-brand-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-shadow: 0 0 10px rgba(255, 178, 190, 0.2);
+  transition: all 0.3s ease;
 }
 
-.nav-item {
-  font-family: 'Inter', sans-serif;
+.header-brand-link:hover .header-brand-title {
+  filter: brightness(1.1);
+  text-shadow: 0 0 15px rgba(255, 178, 190, 0.4);
+}
+
+.header-actions-panel {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-nav-link {
+  font-family: var(--font-heading);
+  font-size: 14px;
   font-weight: 500;
-  font-size: 1rem;
-  color: #B0B0B0;
-  cursor: pointer;
-  transition: color 0.3s ease;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.3s ease, border-color 0.3s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
 }
 
-.nav-item:hover {
-  color: #E91E63;
+.header-nav-link:hover {
+  color: var(--color-primary);
 }
 
-.cart-icon-container {
+.header-nav-link.active-link {
+  color: var(--color-primary);
+  font-weight: 700;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.header-cart-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+  transition: all 0.3s ease;
 }
 
-.header-status {
+.header-cart-indicator:hover .header-cart-label {
+  color: var(--color-primary);
+}
+
+.header-cart-indicator.active-link {
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.header-cart-indicator.active-link .header-cart-label {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.header-cart-label {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  transition: color 0.3s ease;
+}
+
+.cart-badge {
+  background-color: var(--color-accent-rose);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 11px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px var(--color-accent-rose);
+  box-sizing: border-box;
+}
+
+.cart-badge.failure {
+  background-color: var(--error, #ffb4ab);
+  box-shadow: none;
+}
+
+.header-loader {
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.cart-badge {
-  background-color: #E91E63;
-  color: #FFFFFF;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(233, 30, 99, 0.5);
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.cart-badge-error {
-  background-color: #FF5252;
-  color: #FFFFFF;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 50%;
+.lock-vault-btn {
+  background: none;
+  border: 1px solid rgba(255, 178, 190, 0.2);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.lock-vault-btn:hover {
+  background: rgba(255, 178, 190, 0.1);
+  border-color: var(--color-primary);
+  transform: scale(0.97);
+}
+
+.access-vault-link {
+  background: none;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.access-vault-link:hover {
+  background-color: rgba(255, 178, 190, 0.1);
+  box-shadow: 0 0 10px rgba(255, 178, 190, 0.2);
+  transform: scale(0.97);
+}
+
+/* Spacer on root app.css or body is needed so layout content is not hidden under sticky header */
+body {
+  padding-top: 80px;
 }

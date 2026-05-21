@@ -145,6 +145,19 @@ const runSeed = async () => {
       });
     }
 
+    const extraTechImages = [
+      'https://images.unsplash.com/photo-1496181130204-755241544e35?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1618384887929-16ec33faf9c1?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80'
+    ];
+
     // Add extra faker products to reach 20 products
     for (let i = ecommerceProducts.length; i < 20; i++) {
       const name = faker.commerce.productName();
@@ -152,7 +165,7 @@ const runSeed = async () => {
       const price = parseFloat(faker.commerce.price({ min: 45, max: 999, dec: 2 }));
       const stock = faker.number.int({ min: 0, max: 35 });
       const ratings = parseFloat(faker.number.float({ min: 3.8, max: 5.0, fractionDigits: 1 }).toFixed(1));
-      const img = faker.image.urlLoremFlickr({ category: 'technology', width: 640, height: 480 });
+      const img = extraTechImages[i - ecommerceProducts.length] || extraTechImages[0];
 
       await ProductModel.create({
         name,
