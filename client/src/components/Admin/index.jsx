@@ -15,6 +15,7 @@ export const adminApiStatusConstants = {
 const Admin = () => {
   const [apiStatus, setApiStatus] = useState(adminApiStatusConstants.initial);
   const [usersList, setUsersList] = useState([]);
+  const [productsList, setProductsList] = useState([]);
   const [errMsg, setErrMsg] = useState('');
   const [actionLoadingUserId, setActionLoadingUserId] = useState(null);
 
@@ -31,7 +32,7 @@ const Admin = () => {
     setErrMsg('');
 
     try {
-      const response = await fetch(API_ENDPOINTS.users || `${window.location.origin}/api/users`, {
+      const response = await fetch(API_ENDPOINTS.users, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -63,6 +64,63 @@ const Admin = () => {
     }
   }, [navigate]);
 
+  const fetchAllProducts = useCallback(async () => {
+    const token = Cookies.get('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProductsList(data.products || []);
+      }
+    } catch (error) {
+      console.error('Connecting to secure inventory database failed:', error);
+    }
+  }, []);
+
+  const handleDeleteProduct = async (productId) => {
+    const isConfirmed = window.confirm('CRITICAL ACTION: Are you absolute in purging this product catalog entry? This cannot be undone.');
+    if (!isConfirmed) return;
+
+    const token = Cookies.get('token');
+    if (!token) {
+      navigate('/login', { replace: true });
+      return;
+    }
+
+    try {
+      const response = await fetch(API_ENDPOINTS.productDetails(productId), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        await fetchAllProducts();
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        if (response.status === 401 || response.status === 403) {
+          Cookies.remove('token');
+          navigate('/login', { replace: true });
+          return;
+        }
+        alert(errData.message || 'Failed to remove product from catalog');
+      }
+    } catch (error) {
+      alert('Communication failure executing product deletion');
+    }
+  };
+
   useEffect(() => {
     const token = Cookies.get('token');
     const storedUser = localStorage.getItem('user');
@@ -84,7 +142,8 @@ const Admin = () => {
     }
 
     fetchAllUsers();
-  }, [navigate, fetchAllUsers]);
+    fetchAllProducts();
+  }, [navigate, fetchAllUsers, fetchAllProducts]);
 
   const handleTogglePermission = async (userId, currentVal) => {
     const token = Cookies.get('token');
@@ -97,7 +156,7 @@ const Admin = () => {
     const targetPermission = !currentVal;
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.users || `${window.location.origin}/api/users`}/${userId}/permission`, {
+      const response = await fetch(`${API_ENDPOINTS.users}/${userId}/permission`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +195,7 @@ const Admin = () => {
 
     setActionLoadingUserId(userId);
     try {
-      const response = await fetch(`${API_ENDPOINTS.users || `${window.location.origin}/api/users`}/${userId}`, {
+      const response = await fetch(`${API_ENDPOINTS.users}/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -310,6 +369,85 @@ const Admin = () => {
             <span className="aes-text">🔐 Security Handshake Protocol: AES-256 Enabled</span>
             <button type="button" className="refresh-table-btn" onClick={fetchAllUsers} disabled={apiStatus === adminApiStatusConstants.loading}>
               <span className="material-symbols-outlined">sync</span> Synchronize Ledger
+            </button>
+          </div>
+        </section>
+
+        <section className="admin-table-container glass-card glow-border-rose" style={{ marginTop: '40px' }}>
+          <div className="table-header-block">
+            <h2 className="table-block-title">Catalog Inventory Vault</h2>
+            <p className="table-block-sub">
+              Monitor the entire product inventory catalog, view stock counts, and execute catalog purge overrides.
+            </p>
+          </div>
+
+          <div className="table-responsive-wrapper">
+            <table className="admin-cyber-table">
+              <thead>
+                <tr>
+                  <th>Vault Image</th>
+                  <th>Product Name</th>
+                  <th>Secure Price</th>
+                  <th>Stock Level</th>
+                  <th>Availability</th>
+                  <th className="text-center">Catalog Purge Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productsList.map((product) => {
+                  const imageSrc = product.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80";
+                  
+                  return (
+                    <tr key={product.id}>
+                      <td>
+                        <img 
+                          alt={product.name} 
+                          className="admin-product-thumb"
+                          src={imageSrc}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80";
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <span className="name-bold">{product.name}</span>
+                      </td>
+                      <td className="code">
+                        ${product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="code">
+                        <span className={`stock-indicator ${product.stock <= 0 ? 'out' : product.stock < 10 ? 'low' : 'ok'}`}>
+                          {product.stock} units
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`permission-lbl ${product.availability ? 'active' : 'inactive'}`}>
+                          {product.availability ? 'ONLINE / ACTIVE' : 'LOCKED / HIDDEN'}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          type="button"
+                          className="revoke-btn admin-purge-btn"
+                          onClick={() => handleDeleteProduct(product.id)}
+                          title="Purge product from catalog completely"
+                        >
+                          <span className="material-symbols-outlined inline-icon">delete</span>
+                          Purge
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="table-footer-actions">
+            <span className="aes-text">📦 Catalog Vault Inventory Protocol Enabled</span>
+            <button type="button" className="refresh-table-btn" onClick={fetchAllProducts}>
+              <span className="material-symbols-outlined">sync</span> Synchronize Catalog Vault
             </button>
           </div>
         </section>

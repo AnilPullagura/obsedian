@@ -26,6 +26,16 @@ const Home = () => {
   const [editStock, setEditStock] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createName, setCreateName] = useState("");
+  const [createPrice, setCreatePrice] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+  const [createImg, setCreateImg] = useState("");
+  const [createStock, setCreateStock] = useState(10);
+  const [createRatings, setCreateRatings] = useState("0");
+  const [createAvailability, setCreateAvailability] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
+
   const [addingCartId, setAddingCartId] = useState(null);
 
   const navigate = useNavigate();
@@ -213,6 +223,72 @@ const Home = () => {
     document.body.style.overflow = "auto";
   };
 
+  const handleOpenCreateModal = () => {
+    setCreateName("");
+    setCreatePrice("");
+    setCreateDescription("");
+    setCreateImg("");
+    setCreateStock(10);
+    setCreateRatings("0");
+    setCreateAvailability(true);
+    setIsCreateModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+    document.body.style.overflow = "auto";
+  };
+
+  const handleCreateProductSubmit = async (event) => {
+    event.preventDefault();
+    setIsCreating(true);
+
+    try {
+      const token = Cookies.get("token");
+      if (!token) {
+        navigate("/login", { replace: true });
+        return;
+      }
+
+      const bodyPayload = {
+        name: createName,
+        price: parseFloat(createPrice),
+        description: createDescription || null,
+        img: createImg || null,
+        stock: parseInt(createStock, 10),
+        ratings: parseFloat(createRatings) || 0,
+        availability: createAvailability,
+      };
+
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bodyPayload),
+      });
+
+      if (response.ok) {
+        await getProducts();
+        handleCloseCreateModal();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        if (response.status === 401) {
+          Cookies.remove("token");
+          navigate("/login", { replace: true });
+          return;
+        }
+        alert(errorData.message || "Failed to create product in catalog database");
+      }
+    } catch (error) {
+      alert("Connection failure during product creation request");
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   const handleSaveProductChanges = async (event) => {
     event.preventDefault();
     if (!selectedProduct) return;
@@ -293,6 +369,18 @@ const Home = () => {
           Precision-engineered hardware forged in monochromatic brilliance.
           Discover technical minimalism at its zenith.
         </p>
+        {userProfile &&
+          (userProfile.role === "admin" ||
+            userProfile.permission_to_crud === true) && (
+            <button
+              type="button"
+              className="create-product-trigger-btn btn-primary-glow"
+              onClick={handleOpenCreateModal}
+            >
+              <span className="material-symbols-outlined create-btn-icon">add</span>
+              Create New Product
+            </button>
+          )}
       </div>
 
       <div className="products-grid-layout">
@@ -513,6 +601,158 @@ const Home = () => {
                   disabled={isSaving}
                 >
                   {isSaving ? "Saving Changes..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isCreateModalOpen && (
+        <div className="modal-fixed-overlay">
+          <div className="modal-backdrop" onClick={handleCloseCreateModal}></div>
+          <div className="modal-content-panel glass-surface glow-border-rose">
+            <div className="modal-header-row">
+              <h2 className="modal-title">Create New Product</h2>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={handleCloseCreateModal}
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <form
+              className="modal-form-body"
+              onSubmit={handleCreateProductSubmit}
+            >
+              <div className="modal-form-grid">
+                <div className="modal-form-group">
+                  <label htmlFor="create-name-input" className="modal-label">
+                    Product Name
+                  </label>
+                  <input
+                    id="create-name-input"
+                    type="text"
+                    className="input-ghost modal-input"
+                    placeholder="e.g. Onyx Wireless Keyboard"
+                    value={createName}
+                    onChange={(e) => setCreateName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="modal-form-group">
+                  <label htmlFor="create-price-input" className="modal-label">
+                    Price (USD)
+                  </label>
+                  <input
+                    id="create-price-input"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="e.g. 199.99"
+                    className="input-ghost modal-input"
+                    value={createPrice}
+                    onChange={(e) => setCreatePrice(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="modal-form-grid">
+                <div className="modal-form-group">
+                  <label htmlFor="create-img-input" className="modal-label">
+                    Image URL (Optional)
+                  </label>
+                  <input
+                    id="create-img-input"
+                    type="url"
+                    placeholder="https://example.com/image.jpg"
+                    className="input-ghost modal-input"
+                    value={createImg}
+                    onChange={(e) => setCreateImg(e.target.value)}
+                  />
+                </div>
+
+                <div className="modal-form-group">
+                  <label htmlFor="create-ratings-input" className="modal-label">
+                    Ratings (0.0 - 5.0)
+                  </label>
+                  <input
+                    id="create-ratings-input"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="5"
+                    className="input-ghost modal-input"
+                    value={createRatings}
+                    onChange={(e) => setCreateRatings(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="modal-form-group">
+                <label htmlFor="create-desc-input" className="modal-label">
+                  Description
+                </label>
+                <textarea
+                  id="create-desc-input"
+                  rows="3"
+                  placeholder="Crafted with fine materials..."
+                  className="input-ghost modal-textarea"
+                  value={createDescription}
+                  onChange={(e) => setCreateDescription(e.target.value)}
+                />
+              </div>
+
+              <div className="modal-form-group">
+                <label className="modal-label">Stock Level</label>
+                <div className="modal-slider-row">
+                  <input
+                    type="range"
+                    min="0"
+                    max="500"
+                    className="modal-slider-input"
+                    value={createStock}
+                    onChange={(e) => setCreateStock(parseInt(e.target.value, 10))}
+                  />
+                  <span className="modal-slider-value">{createStock} units</span>
+                </div>
+              </div>
+
+              <div className="modal-form-group">
+                <label className="modal-label">Availability</label>
+                <div className="toggle-slider-box">
+                  <label className="switch-container">
+                    <input 
+                      type="checkbox" 
+                      checked={createAvailability}
+                      onChange={() => setCreateAvailability(!createAvailability)}
+                    />
+                    <span className="slider-switch round"></span>
+                  </label>
+                  <span className={`permission-lbl ${createAvailability ? 'active' : 'inactive'}`}>
+                    {createAvailability ? 'AVAILABLE IN CATALOG' : 'LOCKED / HIDDEN'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="modal-actions-row">
+                <button
+                  type="button"
+                  className="modal-cancel-btn"
+                  onClick={handleCloseCreateModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="modal-save-btn btn-glow"
+                  disabled={isCreating}
+                >
+                  {isCreating ? "Forging Product..." : "Create Product"}
                 </button>
               </div>
             </form>

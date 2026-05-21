@@ -7,4 +7,5 @@ export const API_ENDPOINTS = {
   productDetails: (id) => `${API_BASE_URL}/api/products/${id}`,
   cart: `${API_BASE_URL}/api/cart`,
   cartItem: (productId) => `${API_BASE_URL}/api/cart/${productId}`,
+  users: `${API_BASE_URL}/api/users`,
 };
